@@ -85,7 +85,7 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 
 ### macOS
 
-从 Release 下载 `VesperBoard-1.0.0-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
+从 Release 下载 `VesperBoard-v1.0.0-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
 
 - 这是**未签名、未公证**的 `.app`：解压后首次打开会被 Gatekeeper 拦下，
   右键 →「打开」→「打开」，或执行 `xattr -dr com.apple.quarantine "Vesper Board.app"`。

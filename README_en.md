@@ -86,7 +86,7 @@ You need **Windows 10 / 11** or a 64-bit Linux desktop. macOS has an unsigned Ap
 
 ### macOS
 
-Download `VesperBoard-1.0.0-macOS-arm64.zip` from the release (Apple silicon; built by CI on a macOS runner).
+Download `VesperBoard-v1.0.0-macOS-arm64.zip` from the release (Apple silicon; built by CI on a macOS runner).
 
 - The `.app` is **unsigned and not notarised**: on first launch Gatekeeper blocks it —
   right-click → Open → Open, or run `xattr -dr com.apple.quarantine "Vesper Board.app"`.
