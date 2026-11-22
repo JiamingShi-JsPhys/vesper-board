@@ -85,8 +85,12 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 
 ### macOS
 
-本机无法交叉构建 `.app`。仓库里的 GitHub Actions（`.github/workflows/build-desktop.yml`）
-会在 macOS runner 上构建未签名、未公证的 `.app`，首次打开需要右键 →「打开」。
+从 Release 下载 `VesperBoard-1.0.0-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
+
+- 这是**未签名、未公证**的 `.app`：解压后首次打开会被 Gatekeeper 拦下，
+  右键 →「打开」→「打开」，或执行 `xattr -dr com.apple.quarantine "Vesper Board.app"`。
+- Intel Mac 目前没有预编译包，可从源码运行（`python main.py`），或自己用仓库的
+  `.github/workflows/build-desktop.yml` 在 Intel runner 上构建。
 
 ### 从源码运行
 

@@ -86,9 +86,12 @@ You need **Windows 10 / 11** or a 64-bit Linux desktop. macOS is buildable from 
 
 ### macOS
 
-A `.app` cannot be cross-built on this machine. The GitHub Actions workflow
-(`.github/workflows/build-desktop.yml`) builds an unsigned, un-notarised `.app`
-on a macOS runner; right-click → Open the first time.
+Download `VesperBoard-1.0.0-macOS-arm64.zip` from the release (Apple silicon; built by CI on a macOS runner).
+
+- The `.app` is **unsigned and not notarised**: on first launch Gatekeeper blocks it —
+  right-click → Open → Open, or run `xattr -dr com.apple.quarantine "Vesper Board.app"`.
+- There is no prebuilt Intel build yet; run from source (`python main.py`) or build it with
+  `.github/workflows/build-desktop.yml` on an Intel runner.
 
 ### From source
 
