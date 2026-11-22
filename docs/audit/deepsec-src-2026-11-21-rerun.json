@@ -1,0 +1,33 @@
+{
+  "findings": [
+    {
+      "id": "ds_6431307f37b01ce7883b",
+      "mode": "shield",
+      "type": "ssrf",
+      "severity": "medium",
+      "title": "HTTP request appears to use a user-controlled URL.",
+      "description": "HTTP request appears to use a user-controlled URL.",
+      "target": "C:\\Users\\<user>\\Desktop\\Al-tool\\<workspace>\\Coding\\Vesper_Board\\Vesper_Board_1.0.0\\tools\\paper_gen.py",
+      "line": 81,
+      "column": 16,
+      "end_line": 81,
+      "end_column": 56,
+      "evidence": "urllib.request.urlopen(req, timeout=120)",
+      "suggestion": "Allowlist outbound hosts and validate URL schemes.",
+      "poc": null,
+      "detection_layer": "L2",
+      "detection_rule": "sast_ssrf_fetch_user_url",
+      "confidence": 1.0,
+      "verified": false,
+      "timestamp": "2026-11-21T12:57:42.065093+00:00",
+      "file": "C:\\Users\\<user>\\Desktop\\Al-tool\\<workspace>\\Coding\\Vesper_Board\\Vesper_Board_1.0.0\\tools\\paper_gen.py",
+      "url": null,
+      "chain_step": null,
+      "chain_depends_on": [],
+      "fix": [],
+      "dismissed": false,
+      "dismissed_reason": null,
+      "message": "HTTP request appears to use a user-controlled URL."
+    }
+  ]
+}

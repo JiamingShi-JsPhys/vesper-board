@@ -1,0 +1,4 @@
+# 构建期依赖：固定在可复现的版本，避免发行二进制随「当天最新的 PyInstaller」变化。
+PyInstaller==6.22.3
+pillow==13.0.0
+pytest==9.1.1

@@ -1,0 +1,36 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.venv-build/
+dist/
+build/
+docs/*.png
+*.spec.bak
+
+# 本地工作材料：美术现场、旧 CI、待发布快照与打好的包，都不进仓库
+_archive/
+releases/
+
+# 构建日志
+build_*.log
+zip_*.log
+wsl_*.log
+zcode_*.log
+
+# 不随公开仓库分发：受限美术素材与开发脚本
+assets/pet/alpha/
+assets/pet/beta/
+assets/pet/gamma/
+assets/pet/delta/
+assets/pet/xiaoxi/
+assets/ref_*
+assets/refs/
+assets/brand_westlake*.png
+assets/icon-256.png
+assets/app.ico
+packs/
+tools/
+
+# 任何日志都不进仓库
+*.log

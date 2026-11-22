@@ -1,0 +1,34 @@
+Copyright (c) 2026 Jiaming Shi (施嘉明). All rights reserved.
+
+本仓库目前只公开供查看、下载与反馈问题，**尚未授予任何开源许可**。
+在另行以书面形式声明许可证之前，未经版权所有者书面许可，不得复制、修改、
+再分发、再发布本项目的源代码或可执行文件，也不得将其整体或部分并入其他产品。
+
+This repository is published for viewing, downloading and issue reporting only.
+No licence is granted to copy, modify, redistribute or reuse it, in source or
+binary form, without prior written permission from the copyright holder.
+
+------------------------------------------------------------------------
+美术素材不属于上述代码许可的授权范围 / Artwork is excluded
+
+`assets/pet/**`、`assets/ref_*.jpg`、`assets/app_icon.png`、`packs/**`，
+以及其中描绘的角色形象与校徽，版权归各自作者或权利方所有，随本仓库分发
+**不构成**对它们的任何授权。尤其是：
+
+- 「小西」角色设计沿用原作者的设计与比例，权利不属于本项目作者；
+- 校徽及校内标识属于学校，仅作身份识别用途；
+- 第三方艺术家的参考图不得再分发。
+
+如需使用上述任何美术素材，请自行取得相应权利方的许可。
+
+------------------------------------------------------------------------
+第三方软件 / Third-party software
+
+本项目使用、但不拥有以下第三方组件；它们各自的许可证见
+`THIRD_PARTY_LICENSES.txt`，并优先于本文件适用：
+
+- PySide6 / Qt for Python（LGPL-3.0）
+- requests（Apache-2.0）
+- 构建期使用 PyInstaller（GPL-2.0 + 例外）、Pillow（MIT-CMU）
+
+安卓客户端另有 Kotlin、AndroidX、Jetpack Compose、OkHttp（均为 Apache-2.0）。

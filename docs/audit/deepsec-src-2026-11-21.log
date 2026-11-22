@@ -1,0 +1,9 @@
+┌──────────┬─────────────────────┬──────────────────────┬─────────────────────┐
+│ Severity │ Location            │ Rule                 │ Finding             │
+├──────────┼─────────────────────┼──────────────────────┼─────────────────────┤
+│ medium   │ <user>\shijiamin… │ sast_ssrf_fetch_use… │ HTTP request        │
+│          │ Code\Coding\Vesper… │                      │ appears to use a    │
+│          │                     │                      │ user-controlled     │
+│          │                     │                      │ URL.                │
+└──────────┴─────────────────────┴──────────────────────┴─────────────────────┘
+Scanned 43 file(s) in 27931.5 ms; 1 finding(s).

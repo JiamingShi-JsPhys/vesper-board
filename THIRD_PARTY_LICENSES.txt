@@ -1,0 +1,52 @@
+Vesper Board — 第三方组件清单
+================================
+
+本文件列出本项目使用、但不拥有的组件。各组件的许可证以其官方发布为准；
+本文件只是索引，不替代原许可证文本。安装目录下的 `licenses/` 里附带了
+LGPL-3.0、Apache-2.0 与 PSF-2.0 的完整文本。
+
+运行时（随安装包分发）
+----------------------
+
+PySide6 / Qt for Python 6.x
+  许可：LGPL-3.0（Qt 本身另有 GPL-3.0 与商业许可）
+  项目：https://www.qt.io/qt-for-python
+  包含的 Qt 模块：QtCore、QtGui、QtWidgets、QtNetwork、QtWebEngine 等
+  QtWebEngine 内嵌 Chromium，另含 BSD 风格的第三方许可，见安装包内
+  `_internal/PySide6/translations/qtwebengine_locales/` 同级的 Qt 许可文件。
+  LGPL 要求：允许用户替换该库。本项目以 onedir 形式分发，
+  `_internal/PySide6/` 下的动态库可被同版本替换。
+
+requests 2.x
+  许可：Apache-2.0
+  项目：https://github.com/psf/requests
+
+Python 3.12 运行时
+  许可：PSF License Agreement
+  项目：https://www.python.org/
+
+构建期（不随安装包分发）
+------------------------
+
+PyInstaller 6.x
+  许可：GPL-2.0-or-later，附「打包产物不受 GPL 约束」的例外条款
+  项目：https://pyinstaller.org/
+
+Pillow
+  许可：MIT-CMU
+  项目：https://python-pillow.org/
+
+安卓客户端（Coding/Vesper_Board_Android）
+-----------------------------------------
+
+Kotlin / Kotlin Coroutines       Apache-2.0
+AndroidX（core、activity、lifecycle）  Apache-2.0
+Jetpack Compose（BOM、Material 3）     Apache-2.0
+OkHttp                           Apache-2.0
+AndroidX WebKit                  Apache-2.0
+Gradle / Android Gradle Plugin   Apache-2.0
+
+美术与素材
+----------
+
+形象、参考图与校徽不属于上述任何许可证，见 `LICENSE` 的「美术素材」一节。
