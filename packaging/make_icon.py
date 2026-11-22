@@ -1,47 +1,38 @@
-"""生成打包用的图标：蓝色圆 + 白色 W（不依赖中文，三端都能渲染）。"""
+"""生成打包用的图标：直接用 assets/app_icon.png，不再自己画。
+
+三端共用一张方形图标：Windows 生成多尺寸 .ico，macOS 的 .icns 由
+`make_iconset.py` 读取同一张 `build/icon.png` 生成。
+"""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "build"
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "assets" / "app_icon.png"
+OUT_DIR = ROOT / "build"
 SIZES = (256, 128, 64, 48, 32, 16)
 
 
-def draw(size: int) -> Image.Image:
-    scale = 4
-    s = size * scale
-    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    pad = int(s * 0.04)
-    d.ellipse([pad, pad, s - pad, s - pad], fill=(58, 120, 235, 255))
-    # 上高光
-    d.ellipse([pad, pad, s - pad, int(s * 0.52)], fill=(96, 160, 255, 255))
-    # 白色 W
-    font = None
-    for name in ("arialbd.ttf", "Arial Bold.ttf", "DejaVuSans-Bold.ttf"):
-        try:
-            font = ImageFont.truetype(name, int(s * 0.52))
-            break
-        except OSError:
-            continue
-    if font is None:
-        font = ImageFont.load_default()
-    text = "W"
-    left, top, right, bottom = d.textbbox((0, 0), text, font=font)
-    d.text(((s - (right - left)) / 2 - left, (s - (bottom - top)) / 2 - top - s * 0.02),
-           text, font=font, fill=(255, 255, 255, 240))
-    return img.resize((size, size), Image.LANCZOS)
+def square(image: Image.Image) -> Image.Image:
+    """居中裁成正方形，避免不同来源的图被拉变形。"""
+    side = min(image.size)
+    left = (image.width - side) // 2
+    top = (image.height - side) // 2
+    return image.crop((left, top, left + side, top + side))
 
 
 def main() -> None:
+    if not SRC.exists():
+        raise SystemExit(f"找不到图标源文件：{SRC}")
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    images = [draw(n) for n in SIZES]
-    images[0].save(OUT_DIR / "icon.ico", sizes=[(n, n) for n in SIZES])
-    images[0].save(OUT_DIR / "icon.png")
-    print("wrote", OUT_DIR / "icon.ico")
+    base = square(Image.open(SRC).convert("RGBA"))
+    base.save(OUT_DIR / "icon.ico", format="ICO",
+              sizes=[(n, n) for n in SIZES])
+    base.resize((256, 256), Image.Resampling.LANCZOS).save(OUT_DIR / "icon.png")
+    print("wrote", OUT_DIR / "icon.ico", "from", SRC.name)
 
 
 if __name__ == "__main__":
