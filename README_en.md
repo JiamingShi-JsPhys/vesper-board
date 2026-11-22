@@ -68,7 +68,7 @@ It is not a plugin for WeCom or iWestlake — those clients do not expose a thir
 
 ## Install
 
-You need **Windows 10 / 11** or a 64-bit Linux desktop. macOS is buildable from source or in CI only.
+You need **Windows 10 / 11** or a 64-bit Linux desktop. macOS has an unsigned Apple-silicon build produced in CI; Intel Macs can run it from source.
 
 ### Windows
 

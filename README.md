@@ -67,7 +67,7 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 
 ## 安装
 
-需要 **Windows 10 / 11**，或者 64 位 Linux 桌面；macOS 目前只能从源码或 CI 构建。
+需要 **Windows 10 / 11**，或者 64 位 Linux 桌面；macOS 提供 Apple 芯片的未签名包（CI 构建），Intel Mac 可从源码运行。
 
 ### Windows
 
