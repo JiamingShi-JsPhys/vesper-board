@@ -38,17 +38,9 @@ It is not a plugin for WeCom or iWestlake — those clients do not expose a thir
 > Check that your use complies with your school's and Canvas's rules. A Canvas access token
 > carries your account's full API permissions — keep it on your own machine.
 
-```
-        ⬤ 5        ← floating ball; the number is open assignments, red inside 6 h
-        │
-   ┌────┴─────────────┐
-   │ Fri, Nov 20       │
-   │ 5 open · nearest  │
-   │ [Homework] [Timetable]
-   │ Overdue · 1       │
-   │ ▌Lab report 3 …  [Submit]
-   └──────────────────┘
-```
+<p align="center">
+  <img src="assets/screenshot.png" alt="Vesper Board panel: assignment list and timetable" width="760">
+</p>
 
 ## Features
 

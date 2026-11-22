@@ -33,7 +33,7 @@ Linux 包没有对应系统时走 WSL：`scripts/wsl_build_linux.sh` → `script
 | `wsdock/skins.py` `settings.py` | 形象清单、设置读写 |
 | `wsdock/ui/` | `ball.py` 悬浮球、`panel.py` 面板、`settings_page.py` 设置页、`theme.py` 主题 |
 | `assets/pet/<角色>/` | 运行时会读的形象素材，7 个状态 × 512×512 |
-| `packs/` | 可导入的官方形象包，不进 1.0.0 安装包 |
+| `packs/` | 可导入的默认形象包，不进 1.0.0 安装包 |
 | `releases/` | 1.0.0 / 1.1.0 待发布快照，不参与开发 |
 | `_archive/` | 美术现场与旧 CI，不参与运行，已在 `.gitignore` |
 
