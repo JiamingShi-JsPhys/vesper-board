@@ -1,4 +1,4 @@
-﻿; NSIS 安装脚本：dist\VesperBoard -> VesperBoard-1.0.0-setup.exe
+﻿; NSIS 安装脚本：dist\VesperBoard -> VesperBoard-1.0.1-setup.exe
 ; 用免安装的 NSIS 编译：
 ;   & "$env:TEMP\nsis\nsis-3.11\makensis.exe" packaging\windows_installer.nsi
 ; 全程装到 %LOCALAPPDATA%\Programs\VesperBoard，不需要管理员权限。
@@ -8,7 +8,7 @@ Unicode True
 
 !define APP_NAME "晚星看板"
 !define APP_EXE "VesperBoard.exe"
-!define APP_VER "1.0.0"
+!define APP_VER "1.0.1"
 !define APP_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\VesperBoard"
 !define RUN_KEY "Software\Microsoft\Windows\CurrentVersion\Run"
 

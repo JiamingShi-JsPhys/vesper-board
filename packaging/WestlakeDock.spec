@@ -43,6 +43,7 @@ a = Analysis(
     datas=[
         (str(PROJECT / "assets" / "pet"), "assets/pet"),
         (str(PROJECT / "assets" / "app_icon.png"), "assets"),
+        (str(PROJECT / "assets" / "emblems"), "assets/emblems"),
         # LGPL / Apache / PSF 要求随发行物附带许可证文本
         (str(PROJECT / "licenses"), "licenses"),
         (str(PROJECT / "LICENSE"), "."),
@@ -91,8 +92,8 @@ if sys.platform == "darwin":
         info_plist={
             "CFBundleName": "Vesper Board",
             "CFBundleDisplayName": "晚星看板",
-            "CFBundleShortVersionString": "1.0.0",
-            "CFBundleVersion": "1.0.0",
+            "CFBundleShortVersionString": "1.0.1",
+            "CFBundleVersion": "1.0.1",
             "NSHighResolutionCapable": True,
             "LSMinimumSystemVersion": "11.0",
         },

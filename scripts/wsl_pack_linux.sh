@@ -24,7 +24,7 @@ cd "$DIST"
 python3 - <<'PY'
 import os, zipfile, time
 os.chdir(os.path.join(os.environ["HOME"], "vesper-linux", "dist"))
-name = 'VesperBoard-1.0.0-linux-x86_64'
+name = 'VesperBoard-1.0.1-linux-x86_64'
 if os.path.exists(name + '.zip'):
     os.remove(name + '.zip')
 
@@ -49,4 +49,4 @@ print('zip MB', os.path.getsize(name + '.zip') // 1048576,
       'secs', round(time.time() - t0))
 PY
 du -sh VesperBoard
-cp VesperBoard-1.0.0-linux-x86_64.zip "$WIN_ROOT/dist/"
+cp VesperBoard-1.0.1-linux-x86_64.zip "$WIN_ROOT/dist/"

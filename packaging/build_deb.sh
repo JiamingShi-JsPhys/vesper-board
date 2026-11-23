@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 [ -d dist/WestlakeDock ] || { echo "先跑 packaging/build_linux.sh"; exit 1; }
 
-VER="1.0.0"
+VER="1.0.1"
 PKG="westlake-dock_${VER}_amd64"
 ROOT="build/deb/$PKG"
 rm -rf "build/deb" && mkdir -p "$ROOT/DEBIAN" \

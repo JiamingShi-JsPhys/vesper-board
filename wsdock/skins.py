@@ -40,6 +40,18 @@ CHARACTERS: tuple[Character, ...] = (
     Character("xiaoxi", "小西", "Xiaoxi", (
         Variant("mascot", "默认", "Default"),
     )),
+    Character("alpha", "Alpha", "Alpha", (
+        Variant("alpha_crest", "院徽球", "Emblem ball", "emblem"),
+    )),
+    Character("beta", "Beta", "Beta", (
+        Variant("beta_crest", "院徽球", "Emblem ball", "emblem"),
+    )),
+    Character("gamma", "Gamma", "Gamma", (
+        Variant("gamma_crest", "院徽球", "Emblem ball", "emblem"),
+    )),
+    Character("delta", "Delta", "Delta", (
+        Variant("delta_crest", "院徽球", "Emblem ball", "emblem"),
+    )),
 )
 
 

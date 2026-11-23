@@ -31,6 +31,20 @@ def _crest_pix() -> QPixmap | None:
     return pix if not pix.isNull() else None
 
 
+def _emblem_thumb(key: str) -> QPixmap | None:
+    from .. import paths as _paths
+    name = key[:-6] if key.endswith("_crest") else key
+    path = _paths.bundle_dir() / "assets" / "emblems" / (name + ".png")
+    if not path.exists():
+        return None
+    pix = QPixmap(str(path))
+    if pix.isNull():
+        return None
+    return pix.scaled(int((CARD_W - PAD * 2) * 0.82), int((CARD_H - 40) * 0.82),
+                      Qt.AspectRatioMode.KeepAspectRatio,
+                      Qt.TransformationMode.SmoothTransformation)
+
+
 def _icon_thumb() -> QPixmap | None:
     from .. import paths as _paths
     path = _paths.bundle_dir() / "assets" / "app_icon.png"
@@ -207,6 +221,8 @@ class SkinPicker(QWidget):
                     thumb = _idle_thumb(folder) if folder is not None else None
                     if v.kind == "icon":
                         thumb = _icon_thumb()
+                    elif v.kind == "emblem":
+                        thumb = _emblem_thumb(v.key)
                     glyph = "W" if v.key == "crest" else "西"
                     card = SkinCard(v.key, v.en if LANG == "en" else v.zh, "", thumb, True, glyph)
                     card.picked.connect(self._pick)

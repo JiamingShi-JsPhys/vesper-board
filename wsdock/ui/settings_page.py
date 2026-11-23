@@ -7,7 +7,7 @@ import re
 import shutil
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QUrl, Signal
+from PySide6.QtCore import Qt, QThread, QUrl, Signal
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -22,10 +22,88 @@ from ..autostart import is_enabled as autostart_enabled, set_enabled as set_auto
 from ..canvas import CanvasClient, CanvasError
 from ..i18n import t
 from ..settings import Settings
-from ..version import version_line
+from ..version import VERSION, version_line
 from . import theme
 from .widgets import warn_on_top
 from .skin_picker import SkinPicker
+
+RELEASES_URL = "https://github.com/JiamingShi-JsPhys/vesper-board/releases"
+UPDATE_API = "https://api.github.com/repos/JiamingShi-JsPhys/vesper-board/releases/latest"
+
+
+def _version_tuple(text: str) -> tuple[int, ...]:
+    nums = re.findall(r"\d+", str(text))[:3]
+    return tuple(int(x) for x in nums) or (0,)
+
+
+class _UpdateCheck(QThread):
+    """点「检查更新」时查一次版本号（不后台常驻）。
+
+    国内网络下 api.github.com 经常 403/限流，所以按这个顺序试：
+    1. raw.githubusercontent 上的 version.json（发版时写入，最权威）
+    2. jsDelivr 镜像
+    3. github.com/releases/latest 的 302 跳转（Location 里带 tag，不限流）
+    4. releases.atom 的条目标题
+    5. GitHub API 只做最后兜底
+    """
+
+    done = Signal(bool, str, str)      # ok, version, url
+
+    ENDPOINTS = (
+        "https://raw.githubusercontent.com/JiamingShi-JsPhys/vesper-board/main/version.json",
+        "https://cdn.jsdelivr.net/gh/JiamingShi-JsPhys/vesper-board@main/version.json",
+    )
+    LATEST_URL = "https://github.com/JiamingShi-JsPhys/vesper-board/releases/latest"
+    ATOM_URL = "https://github.com/JiamingShi-JsPhys/vesper-board/releases.atom"
+
+    def run(self) -> None:             # noqa: D102 - QThread entry
+        import requests
+        headers = {"User-Agent": "VesperBoard/" + VERSION}
+        for url in self.ENDPOINTS:
+            try:
+                resp = requests.get(url, timeout=6, headers=headers)
+                if resp.status_code != 200:
+                    continue
+                data = resp.json() if resp.content else {}
+                tag = str(data.get("version") or "").lstrip("vV")
+                if tag:
+                    self.done.emit(True, tag, str(data.get("url") or RELEASES_URL))
+                    return
+            except Exception:
+                continue
+        # releases/latest 会 302 到 /releases/tag/vX.Y.Z
+        try:
+            resp = requests.get(self.LATEST_URL, timeout=8, headers=headers,
+                                allow_redirects=False)
+            loc = resp.headers.get("Location") or resp.url or ""
+            m = re.search(r"/tag/([^/?#]+)", loc)
+            if m:
+                self.done.emit(True, m.group(1).lstrip("vV"), RELEASES_URL)
+                return
+        except Exception:
+            pass
+        try:
+            resp = requests.get(self.ATOM_URL, timeout=8, headers=headers)
+            m = re.search(r"<entry>.*?<title>([^<]+)</title>", resp.text or "", re.S)
+            if m:
+                nums = re.search(r"\d+\.\d+(?:\.\d+)?", m.group(1))
+                if nums:
+                    self.done.emit(True, nums.group(0), RELEASES_URL)
+                    return
+        except Exception:
+            pass
+        try:
+            resp = requests.get(UPDATE_API, timeout=6, headers={
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "VesperBoard/" + VERSION,
+            })
+            data = resp.json() if resp.content else {}
+            tag = str(data.get("tag_name") or "").lstrip("vV")
+            url = str(data.get("html_url") or RELEASES_URL)
+            self.done.emit(bool(tag), tag, url)
+        except Exception:
+            self.done.emit(False, "", RELEASES_URL)
+
 
 try:
     from .login import LoginWindow
@@ -322,6 +400,40 @@ class SettingsPage(QWidget):
         row_t.addStretch(1)
         root.addLayout(row_t)
 
+        update_row = QHBoxLayout()
+        ver = QLabel(version_line())
+        ver.setFont(theme.font(7.5))
+        ver.setStyleSheet(f"color: {theme.TEXT_MUTED.name()}; padding-top: 4px;")
+        update_row.addWidget(ver, 1)
+        self.update_btn = QPushButton(t("set.check_update"))
+        self.update_btn.setFont(theme.font(7.5))
+        self.update_btn.setFixedHeight(26)
+        self.update_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.update_btn.setStyleSheet(
+            "QPushButton { color: __TEXT__; background: __INK14__;"
+            " border: 1px solid __INK26__; border-radius: 13px; padding: 0 14px; }"
+            "QPushButton:hover { background: __INK22__; }"
+            "QPushButton:disabled { color: __MUTED__; }"
+        )
+        self.update_btn.clicked.connect(self._check_update)
+        update_row.addWidget(self.update_btn)
+        root.addLayout(update_row)
+
+        self.update_msg = QLabel("")
+        self.update_msg.setFont(theme.font(7.5))
+        self.update_msg.setStyleSheet(f"color: {theme.TEXT_MUTED.name()};")
+        self.update_msg.setVisible(False)
+        root.addWidget(self.update_msg)
+
+        self.update_open = QPushButton(t("set.open_download"))
+        self.update_open.setFont(theme.font(7.5))
+        self.update_open.setFixedHeight(26)
+        self.update_open.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.update_open.setStyleSheet(self.update_btn.styleSheet())
+        self.update_open.setVisible(False)
+        self.update_open.clicked.connect(self._open_releases)
+        root.addWidget(self.update_open)
+
         # ------------------------------------------------------------ 提醒
         root = self._page(t("set.reminders"))
         row_cr = QHBoxLayout()
@@ -421,10 +533,7 @@ class SettingsPage(QWidget):
         root.addWidget(_hint(t("set.export_hint")))
 
         root.addWidget(_hint(t("set.privacy")))
-        ver = QLabel(version_line())
-        ver.setFont(theme.font(7.5))
-        ver.setStyleSheet(f"color: {theme.TEXT_MUTED.name()}; padding-top: 4px;")
-        root.addWidget(ver)
+
         root.addStretch(1)
 
         self._regroup()
@@ -433,6 +542,34 @@ class SettingsPage(QWidget):
 
 
     # ------------------------------------------------------------ regrouping
+    def _check_update(self) -> None:
+        self.update_btn.setEnabled(False)
+        self.update_btn.setText(t("set.checking"))
+        self.update_msg.setVisible(False)
+        self.update_open.setVisible(False)
+        self._update_url = RELEASES_URL
+        self._update_thread = _UpdateCheck(self)
+        self._update_thread.done.connect(self._on_update_result)
+        self._update_thread.start()
+
+    def _on_update_result(self, ok: bool, tag: str, url: str) -> None:
+        self.update_btn.setEnabled(True)
+        self.update_btn.setText(t("set.check_update"))
+        if ok and tag:
+            self._update_url = url or RELEASES_URL
+            if _version_tuple(tag) > _version_tuple(VERSION):
+                self.update_msg.setText(t("set.update_available") % tag)
+                self.update_open.setVisible(True)
+            else:
+                self.update_msg.setText(t("set.up_to_date"))
+        else:
+            self.update_msg.setText(t("set.update_failed"))
+            self.update_open.setVisible(True)
+        self.update_msg.setVisible(True)
+
+    def _open_releases(self) -> None:
+        QDesktopServices.openUrl(QUrl(self._update_url or RELEASES_URL))
+
     def _regroup(self) -> None:
         """把六张卡片并成用户要的几组：常规 / 形象 / 账号 / 高级 / 作者。
 
@@ -567,7 +704,6 @@ class SettingsPage(QWidget):
         painter = QPainter(pix)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
         painter.setBrush(theme.BG_DEEP)
-        painter.setPen(QPen(theme.BORDER, 1))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawEllipse(QRectF(0, 0, 44, 44))
         painter.setPen(QColor("__TEXT__"))

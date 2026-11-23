@@ -4,7 +4,7 @@ from __future__ import annotations
 
 APP_NAME = "Vesper Board"
 ZH_NAME = "晚星看板"
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 
 def version_line() -> str:

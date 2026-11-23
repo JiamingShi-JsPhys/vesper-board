@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version 1.0.0" src="https://img.shields.io/badge/version-1.0.0-1f6feb">
+  <img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-1f6feb">
   <img alt="Windows 10 / 11" src="https://img.shields.io/badge/Windows-10%20%2F%2011-1f6feb">
   <img alt="Linux x64" src="https://img.shields.io/badge/Linux-x64-1f6feb">
   <img alt="macOS (CI)" src="https://img.shields.io/badge/macOS-CI%20build-8b8b8f">
@@ -52,6 +52,7 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 - **提醒**：开课前 N 分钟提醒一次，DDL 前 2 小时提醒，勿扰时段内一律不弹；也可以对单条作业挑具体时间。
 - **早报与角标**：每天第一条刷新报今天几节课、几个待交、最近一件是什么；角标可显示待交数量，或「离最近截止还有多久」（`-2h` = 逾期两小时）。
 - **形象**：小西七种状态（idle / hover / syncing / class / urgent / done / error），卡片式切换，64–200 px 可调；支持导入自己的形象，格式见 [docs/custom-skin.md](docs/custom-skin.md)。
+- **院徽球**：Alpha / Beta / Gamma / Delta 四个书院各一个。
 - **主题**：跟随系统 / 浅色 / 深色，切换即时生效；光晕与右上角标点默认关闭。
 - **其它**：专注 25 分钟、导出 `.ics`、中英双语、开机自启、托盘菜单、气泡说话。
 
@@ -71,21 +72,21 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 
 ### Windows
 
-- **安装包**：运行 `VesperBoard-1.0.0-setup.exe`。默认装到 `%LOCALAPPDATA%\Programs\VesperBoard`，不需要管理员权限；会创建桌面与开始菜单快捷方式。
+- **安装包**：运行 `VesperBoard-1.0.1-setup.exe`。默认装到 `%LOCALAPPDATA%\Programs\VesperBoard`，不需要管理员权限；会创建桌面与开始菜单快捷方式。
   安装包没有代码签名，SmartScreen 可能提示「Windows 已保护你的电脑」，点「更多信息」→「仍要运行」。
-- **免安装**：解压 `VesperBoard-1.0.0-win-x64.zip`，运行里面的 `VesperBoard.exe`。
-- **静默安装**：`VesperBoard-1.0.0-setup.exe /S`，默认保留已有数据。
+- **免安装**：解压 `VesperBoard-1.0.1-win-x64.zip`，运行里面的 `VesperBoard.exe`。
+- **静默安装**：`VesperBoard-1.0.1-setup.exe /S`，默认保留已有数据。
 
 ### Linux
 
-- 解压 `VesperBoard-1.0.0-linux-x86_64.zip`，运行 `VesperBoard/VesperBoard`。
+- 解压 `VesperBoard-1.0.1-linux-x86_64.zip`，运行 `VesperBoard/VesperBoard`。
   zip 里保留了符号链接，请用会保留链接的 `unzip`、`bsdtar` 或文件管理器解压；
   用 Python 的 `zipfile` 解压会把链接写成文本文件，程序起不来。
 - 或者安装 `.deb`（由 `packaging/build_deb.sh` 生成）。
 
 ### macOS
 
-从 Release 下载 `VesperBoard-v1.0.0-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
+从 Release 下载 `VesperBoard-v1.0.1-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
 
 - 这是**未签名、未公证**的 `.app`：解压后首次打开会被 Gatekeeper 拦下，
   右键 →「打开」→「打开」，或执行 `xattr -dr com.apple.quarantine "Vesper Board.app"`。
@@ -147,7 +148,7 @@ python main.py
 
 **AMS 一直失败** —— 先确认浏览器里能打开课表页，再在设置里点「登录」重新走一遍统一身份认证。
 
-**登录页白屏** —— 旧版本残留的会话 cookie 会造成 `canvas ↔ iam` 循环重定向；1.0.0 起主动登录会使用干净的内存会话，仍有问题请提 issue 并附上 `dock.log`。
+**登录页白屏** —— 旧版本残留的会话 cookie 会造成 `canvas ↔ iam` 循环重定向；1.0.1 起主动登录会使用干净的内存会话，仍有问题请提 issue 并附上 `dock.log`。
 
 **卸载删不掉数据** —— 卸载器会先结束正在运行的实例；选择「删除数据」时会同时清理新旧两个数据目录。
 

@@ -26,6 +26,7 @@ ICON_BALL = False
 
 SKIN = ""          # "" = assets/pet 根目录；否则 assets/pet/<skin>/
 CREST = False      # 校徽风格的矢量球（没有立绘目录）
+EMBLEM = ""        # 书院院徽球：assets/emblems/<name>.png
 
 
 def _app_icon_pixmap():
@@ -51,6 +52,16 @@ def pet_dir() -> Path:
         return _paths.pet_user_dir() / SKIN[5:]
     root = pet_root()
     return root / SKIN if SKIN else root
+
+
+def _emblem_pixmap(name: str) -> QPixmap | None:
+    key = name[:-6] if name.endswith("_crest") else name
+    from .. import paths as _paths
+    path = _paths.bundle_dir() / "assets" / "emblems" / (key + ".png")
+    if not path.exists():
+        return None
+    pix = QPixmap(str(path))
+    return None if pix.isNull() else pix
 
 
 def _crest_pixmap() -> QPixmap | None:
@@ -133,11 +144,12 @@ class Ball(QWidget):
             log.warning("形象目录里没有可用的 PNG：%s", folder)
 
     def set_skin(self, skin: str) -> None:
-        global SKIN, CREST, ICON_BALL
+        global SKIN, CREST, ICON_BALL, EMBLEM
         skin = skin or ""
         CREST = skin == "crest"          # 校徽球：没有素材，只是换个字
         ICON_BALL = skin == "icon"       # 晚星看板：用 APP 图标当球
-        SKIN = "" if (CREST or ICON_BALL) else skin
+        EMBLEM = skin if skin.endswith("_crest") else ""
+        SKIN = "" if (CREST or ICON_BALL or EMBLEM) else skin
         self.reload_skin()
 
     def reload_skin(self) -> None:
@@ -147,7 +159,7 @@ class Ball(QWidget):
             # 选中的形象目录被删/改名了：退回 APP 图标球，别留一个空球
             self.set_skin("icon")
             return
-        size = self._pet_size if (self._images or ICON_BALL) else SIZE
+        size = self._pet_size if (self._images or ICON_BALL or EMBLEM) else SIZE
         self.setFixedSize(size, size)
         self.update()
 
@@ -168,7 +180,7 @@ class Ball(QWidget):
     def set_pet_size(self, px: int) -> None:
         """立绘边长（64–128）。没有立绘时仍是矢量球的固定尺寸。"""
         self._pet_size = max(48, min(200, int(px)))
-        size = self._pet_size if (self._images or ICON_BALL) else SIZE
+        size = self._pet_size if (self._images or ICON_BALL or EMBLEM) else SIZE
         if size != self.width():
             self.setFixedSize(size, size)
         self.update()
@@ -306,6 +318,19 @@ class Ball(QWidget):
             painter.setPen(Qt.PenStyle.NoPen)
             painter.setBrush(glow)
             painter.drawEllipse(QPointF(cx, cy), radius + 8, radius + 8)
+
+        if EMBLEM:
+            em = _emblem_pixmap(EMBLEM)
+            if em is not None:
+                # 院徽不是「球」：直接画院徽本身的形状（四叶草 / 六边形 / 圆盘）
+                side = int(self.width() * 0.94)
+                scaled = em.scaled(side, side, Qt.AspectRatioMode.KeepAspectRatio,
+                                   Qt.TransformationMode.SmoothTransformation)
+                painter.drawPixmap((self.width() - scaled.width()) // 2,
+                                   (self.height() - scaled.height()) // 2, scaled)
+                if self._badge_on and (self._count > 0 or self._badge_text):
+                    self._paint_badge(painter)
+                return
 
         if ICON_BALL:
             icon = _app_icon_pixmap()
