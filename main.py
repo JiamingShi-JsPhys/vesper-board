@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QApplication, QMenu, QSystemTrayIcon, QWidget,
 )
 
-from wsdock import archive, paths, reminders, security
+from wsdock import archive, paths, reminders, security, vault
 from wsdock import i18n
 from wsdock.i18n import set_language, t
 from wsdock import autostart as autostart_mod
@@ -892,11 +892,7 @@ class Dock(QWidget):
     @staticmethod
     def _append_log(message: str) -> None:
         log.info(message)
-        try:
-            with paths.log_file().open("a", encoding="utf-8") as fh:
-                fh.write(message + "\n")
-        except OSError:
-            pass
+        # 日志统一走 VaultLogHandler（密文落盘），不再手动 open("a") 写明文
 
     # ------------------------------------------------------------------ close
     # ------------------------------------------------------------ z-order
@@ -1072,16 +1068,29 @@ def main() -> int:
     if already_running():
         return 0
 
-    from logging.handlers import RotatingFileHandler
-
+    # 日志也加密：dock.log 里会出现课程名、作业标题——这些同样是用户数据。
+    # 出问题时用「设置 → 高级 → 导出诊断日志」解出一份明文。
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(message)s",
-        handlers=[RotatingFileHandler(
-            paths.log_file(), maxBytes=1_000_000, backupCount=2, encoding="utf-8")],
+        handlers=[vault.VaultLogHandler()],
     )
     for gone in paths.purge_plain_cookies():
         logging.getLogger("wsdock.privacy").info("已清理明文 cookie：%s", gone.name)
+    for gone in paths.purge_web_dirs():
+        logging.getLogger("wsdock.privacy").info("已清理浏览器缓存目录：%s", gone.name)
+    # 旧版本留下的明文数据：原地转成密文（日志整份重封）
+    data = paths.data_dir()
+    for key, fname in (("settings", "settings.json"), ("archived", "archived.json"),
+                       ("reminders", "reminders.json")):
+        if vault.migrate_plaintext(key, data / fname):
+            logging.getLogger("wsdock.privacy").info("已加密旧明文文件：%s", fname)
+    if vault.migrate_log(paths.log_file()):
+        logging.getLogger("wsdock.privacy").info("已把旧明文日志重新封装")
+
+    gone_legacy = paths.purge_legacy_dir()
+    if gone_legacy is not None:
+        logging.getLogger("wsdock.privacy").info("已清理改名前的数据目录：%s", gone_legacy.name)
     _t0 = time.perf_counter()
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_ShareOpenGLContexts, True)
     QApplication.setAttribute(Qt.ApplicationAttribute.AA_DontCreateNativeWidgetSiblings, True)
@@ -1092,6 +1101,7 @@ def main() -> int:
         pass
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
+    app.aboutToQuit.connect(lambda: paths.purge_web_dirs())
     app.setApplicationName("VesperBoard")
     theme.install_qss_hook()
     app.setApplicationDisplayName("Vesper Board")

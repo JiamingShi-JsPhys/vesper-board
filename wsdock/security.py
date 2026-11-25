@@ -185,3 +185,30 @@ def load_secret(path: Path) -> str:
         except OSError:
             return ""
     return ""
+
+
+# ------------------------------------------------------------- 任意字节 / 钥匙串
+def protect_bytes(data: bytes) -> bytes:
+    """Windows：用 DPAPI 封装任意长度的字节。其它平台抛 OSError，调用方自行降级。"""
+    if not sys.platform.startswith("win"):
+        raise OSError("DPAPI 只在 Windows 上可用")
+    return _protect(data)
+
+
+def unprotect_bytes(blob: bytes) -> bytes:
+    if not sys.platform.startswith("win"):
+        raise OSError("DPAPI 只在 Windows 上可用")
+    return _unprotect(blob)
+
+
+def keychain_available() -> bool:
+    """macOS 的 security 命令 / Linux 的 secret-tool 是否可用。"""
+    return _kc_available()
+
+
+def keychain_put(name: str, value: str) -> bool:
+    return _kc_available() and _kc_set(name, value)
+
+
+def keychain_get(name: str) -> str:
+    return _kc_get(name) if _kc_available() else ""

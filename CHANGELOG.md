@@ -3,7 +3,22 @@
 本项目按 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 组织，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [1.0.1] — 2026-11-23
+## [1.0.2] — 2026-11-25
+
+### 变更
+
+- **本机数据全加密**：`settings.json`、`archived.json`、`reminders.json` 和 `dock.log`
+  改用 **AES-256-GCM** 封装后再写盘，主密钥 32 字节随机数，由 Windows DPAPI
+  （macOS 钥匙串 / Linux secret-tool）保管；文件被拷走或改名都解不开
+- 登录窗的 Chromium 页面缓存改成内存缓存，启动与退出时清空 `web-profile/`、
+  `web-cache/` 和 `%APPDATA%` 下的 QtWebEngine 目录
+- 改名前的 `WestlakeDock` 残留目录在新目录已存在时于启动时清理，不再留第二份凭据与旧日志
+
+### 新增
+
+- 设置 → 高级 → 「导出诊断日志（明文）」：日志平时是密文，排障时才解出一份
+
+## [1.0.2] — 2026-11-23
 
 院徽版本：形象里加入四个书院的院徽球，并让应用能自己检查更新。
 

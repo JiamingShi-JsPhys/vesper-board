@@ -7,10 +7,9 @@ archive lives on this machine only and never talks to Canvas.
 
 from __future__ import annotations
 
-import json
 from datetime import datetime
 
-from . import paths
+from . import paths, vault
 from .models import Assignment
 
 
@@ -19,13 +18,7 @@ def _file():
 
 
 def load() -> dict[str, dict]:
-    path = _file()
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return {}
+    data = vault.read_json("archived", _file(), {})
     if not isinstance(data, dict):
         return {}
     return {str(k): v for k, v in data.items() if isinstance(v, dict)}
@@ -95,7 +88,6 @@ def entries() -> list[Assignment]:
 
 def _write(data: dict) -> None:
     try:
-        paths.write_text_atomic(
-            _file(), json.dumps(data, ensure_ascii=False, indent=2))
+        vault.write_json("archived", _file(), data)
     except OSError:
         pass

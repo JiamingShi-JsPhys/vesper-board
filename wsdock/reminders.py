@@ -6,10 +6,9 @@
 
 from __future__ import annotations
 
-import json
 from datetime import datetime
 
-from . import paths
+from . import paths, vault
 
 
 def _file():
@@ -17,13 +16,7 @@ def _file():
 
 
 def load() -> list[dict]:
-    path = _file()
-    if not path.exists():
-        return []
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        return []
+    data = vault.read_json("reminders", _file(), [])
     if not isinstance(data, list):
         return []
     out = []
@@ -42,9 +35,9 @@ def load() -> list[dict]:
 
 def _write(items: list[dict]) -> None:
     try:
-        paths.write_text_atomic(_file(), json.dumps(
-            [{"id": i["id"], "title": i["title"], "when": i["when"].isoformat(timespec="seconds")}
-             for i in items], ensure_ascii=False, indent=2))
+        vault.write_json("reminders", _file(), [
+            {"id": i["id"], "title": i["title"], "when": i["when"].isoformat(timespec="seconds")}
+            for i in items])
     except OSError:
         pass
 

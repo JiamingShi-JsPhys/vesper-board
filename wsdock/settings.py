@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import asdict, dataclass, field
 from urllib.parse import urlsplit
 
-from . import paths
+from . import paths, vault
 
 DEFAULT_CANVAS = "https://canvas.westlake.edu.cn"
 DEFAULT_AMS = "https://ams.westlake.edu.cn"
@@ -76,12 +75,8 @@ class Settings:
 
     @classmethod
     def load(cls) -> "Settings":
-        f = paths.settings_file()
-        if not f.exists():
-            return cls()
-        try:
-            raw = json.loads(f.read_text(encoding="utf-8"))
-        except Exception:
+        raw = vault.read_json("settings", paths.settings_file(), {})
+        if not raw:
             return cls()
         known = {k: v for k, v in raw.items() if k in cls.__dataclass_fields__}
         obj = cls(**known)
@@ -90,7 +85,4 @@ class Settings:
         return obj
 
     def save(self) -> None:
-        paths.write_text_atomic(
-            paths.settings_file(),
-            json.dumps(asdict(self), ensure_ascii=False, indent=2),
-        )
+        vault.write_json("settings", paths.settings_file(), asdict(self))

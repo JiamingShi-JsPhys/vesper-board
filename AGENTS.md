@@ -49,6 +49,10 @@ Linux 包没有对应系统时走 WSL：`scripts/wsl_build_linux.sh` → `script
 - **网络**：带凭据的请求只发往 `canvas.westlake.edu.cn` 与 `ams.westlake.edu.cn`；
   Canvas 返回的上传/附件地址可能指向对象存储，那类请求必须走 `TransferSession`（无凭据），
   跨来源绝对 URL 直接拒绝。改 `wsdock/net.py` 前先读 `docs/security-audit.md` 的 1.0.0 复查一节。
+- **落盘加密**：用户数据（settings / archived / reminders / dock.log）一律走
+  `wsdock/vault.py` 的 AES-256-GCM，主密钥由 DPAPI / 钥匙串封装；新增持久化文件也用
+  `vault.read_json` / `write_json` / `append_log`，不要直接 `open()` 写明文。
+  日志明文只能通过「设置 → 高级 → 导出诊断日志」导出。
 - **不要提交或发布**：`git commit` / `push` / `tag` 与任何 Release 都要先问用户。
 
 ## 已知坑

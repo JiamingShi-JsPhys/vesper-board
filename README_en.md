@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-1f6feb">
+  <img alt="Version 1.0.2" src="https://img.shields.io/badge/version-1.0.2-1f6feb">
   <img alt="Windows 10 / 11" src="https://img.shields.io/badge/Windows-10%20%2F%2011-1f6feb">
   <img alt="Linux x64" src="https://img.shields.io/badge/Linux-x64-1f6feb">
   <img alt="macOS (CI)" src="https://img.shields.io/badge/macOS-CI%20build-8b8b8f">
@@ -73,21 +73,21 @@ You need **Windows 10 / 11** or a 64-bit Linux desktop. macOS has an unsigned Ap
 
 ### Windows
 
-- **Installer**: run `VesperBoard-1.0.1-setup.exe`. It installs to `%LOCALAPPDATA%\Programs\VesperBoard` without admin rights and creates desktop and Start Menu shortcuts.
+- **Installer**: run `VesperBoard-1.0.2-setup.exe`. It installs to `%LOCALAPPDATA%\Programs\VesperBoard` without admin rights and creates desktop and Start Menu shortcuts.
   The installer is not code-signed, so SmartScreen may warn; choose "More info" → "Run anyway".
-- **Portable**: unzip `VesperBoard-1.0.1-win-x64.zip` and run `VesperBoard.exe`.
-- **Silent**: `VesperBoard-1.0.1-setup.exe /S` keeps existing data.
+- **Portable**: unzip `VesperBoard-1.0.2-win-x64.zip` and run `VesperBoard.exe`.
+- **Silent**: `VesperBoard-1.0.2-setup.exe /S` keeps existing data.
 
 ### Linux
 
-- Unzip `VesperBoard-1.0.1-linux-x86_64.zip` and run `VesperBoard/VesperBoard`.
+- Unzip `VesperBoard-1.0.2-linux-x86_64.zip` and run `VesperBoard/VesperBoard`.
   The archive keeps symlinks: extract with `unzip`, `bsdtar` or a file manager that
   preserves them. Python's `zipfile` writes the links as text files and the app will not start.
 - Or install the `.deb` produced by `packaging/build_deb.sh`.
 
 ### macOS
 
-Download `VesperBoard-v1.0.1-macOS-arm64.zip` from the release (Apple silicon; built by CI on a macOS runner).
+Download `VesperBoard-v1.0.2-macOS-arm64.zip` from the release (Apple silicon; built by CI on a macOS runner).
 
 - The `.app` is **unsigned and not notarised**: on first launch Gatekeeper blocks it —
   right-click → Open → Open, or run `xattr -dr com.apple.quarantine "Vesper Board.app"`.
@@ -130,6 +130,7 @@ You can still paste a Canvas personal access token under Account (the old way), 
   Uploads and downloads to object storage use a separate connection with no `Authorization`
   header and no cookies; cross-origin callbacks returned by Canvas are refused.
 - Files leave your machine only when you press "Submit" and confirm; Canvas may then move them to its own object storage.
+- **Everything on disk is encrypted**: settings, archive, reminders and logs are sealed with **AES-256-GCM**, and the key is wrapped by the OS credential store (DPAPI / Keychain / secret-tool) — a copied file is useless elsewhere. To read the log, use Settings → Advanced → Export diagnostic log.
 - Tokens and sessions are encrypted with **Windows DPAPI** (`%LOCALAPPDATA%\VesperBoard\*.bin`), the macOS Keychain, or `secret-tool` on Linux; without `secret-tool` they fall back to a `0600` plain file.
 - The embedded browser (QtWebEngine) keeps cookies in memory. Old plaintext cookie databases are removed at startup. Chromium's own profile may still contain cache and site data; delete `web-profile/` and `web-cache/` if that matters to you.
 - The uninstaller's "also delete local data" option removes `%LOCALAPPDATA%\VesperBoard` and the pre-rename `%LOCALAPPDATA%\WestlakeDock`.
@@ -146,7 +147,7 @@ You can still paste a Canvas personal access token under Account (the old way), 
 
 **AMS keeps failing** — first check that the timetable opens in a browser, then press "Log in" again in Settings to redo single sign-on.
 
-**The login page is blank** — a stale session cookie from an older build can cause a `canvas ↔ iam` redirect loop. Since 1.0.1 an explicit login starts from a clean in-memory session; if it still happens, open an issue with `dock.log`.
+**The login page is blank** — a stale session cookie from an older build can cause a `canvas ↔ iam` redirect loop. Since 1.0.2 an explicit login starts from a clean in-memory session; if it still happens, open an issue with `dock.log`.
 
 **Uninstall leaves data behind** — the uninstaller stops the running instance first, and the "delete data" option clears both the new and the old data directories.
 

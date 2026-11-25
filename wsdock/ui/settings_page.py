@@ -532,6 +532,23 @@ class SettingsPage(QWidget):
         root.addLayout(row_e)
         root.addWidget(_hint(t("set.export_hint")))
 
+        log_btn = QPushButton(t("set.export_log"))
+        log_btn.setFont(theme.font(8))
+        log_btn.setFixedHeight(28)
+        log_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        log_btn.setStyleSheet(
+            "QPushButton { color: __TEXT__; background: __INK16__;"
+            " border: 1px solid __INK22__; border-radius: 14px; padding: 0 14px; }"
+            "QPushButton:hover { background: __INK32__; }"
+        )
+        log_btn.clicked.connect(self._export_log)
+        row_l = QHBoxLayout()
+        row_l.addWidget(log_btn)
+        row_l.addStretch(1)
+        root.addLayout(row_l)
+        root.addWidget(_hint(t("set.export_log_hint")))
+        root.addWidget(_hint(t("set.vault_hint")))
+
         root.addWidget(_hint(t("set.privacy")))
 
         root.addStretch(1)
@@ -566,6 +583,27 @@ class SettingsPage(QWidget):
             self.update_msg.setText(t("set.update_failed"))
             self.update_open.setVisible(True)
         self.update_msg.setVisible(True)
+
+    def _export_log(self) -> None:
+        """日志是密文，排障时才解一份明文出来。"""
+        from .. import vault
+
+        base = paths.log_file()
+        target, _ = QFileDialog.getSaveFileName(
+            self, t("set.export_log"),
+            str(Path.home() / "VesperBoard-diagnostic.log"), "*.log")
+        if not target:
+            return
+        parts = []
+        for i in (2, 1):
+            older = base.with_name("%s.%d" % (base.name, i))
+            if older.exists():
+                parts.append(vault.LogSink(older).read())
+        parts.append(vault.log_sink().read())
+        try:
+            Path(target).write_text("".join(parts), encoding="utf-8")
+        except OSError as exc:
+            self.account_msg.setText(str(exc))
 
     def _open_releases(self) -> None:
         QDesktopServices.openUrl(QUrl(self._update_url or RELEASES_URL))

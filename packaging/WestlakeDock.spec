@@ -92,8 +92,8 @@ if sys.platform == "darwin":
         info_plist={
             "CFBundleName": "Vesper Board",
             "CFBundleDisplayName": "晚星看板",
-            "CFBundleShortVersionString": "1.0.1",
-            "CFBundleVersion": "1.0.1",
+            "CFBundleShortVersionString": "1.0.2",
+            "CFBundleVersion": "1.0.2",
             "NSHighResolutionCapable": True,
             "LSMinimumSystemVersion": "11.0",
         },

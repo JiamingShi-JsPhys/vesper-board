@@ -2,7 +2,7 @@
 ; 编译： "C:\Program Files\Inno Setup 7\ISCC.exe" packaging\windows_installer.iss
 
 #define MyAppName "晚星看板"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppExeName "VesperBoard.exe"
 
 [Setup]

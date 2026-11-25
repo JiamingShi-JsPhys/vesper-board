@@ -35,13 +35,9 @@ AMS_START = "https://ams.westlake.edu.cn/home/"
 
 def _log(message: str) -> None:
     """Diagnostics for the login flow — counts and hosts only, never values."""
-    try:
-        with paths.log_file().open("a", encoding="utf-8") as fh:
-            fh.write("[login] " + message + "\n")
-    except OSError:
-        pass
+    from .. import vault
 
-
+    vault.append_log("[login] " + message)
 def _as_text(value) -> str:
     if isinstance(value, str):
         return value
@@ -110,7 +106,8 @@ class LoginWindow(QDialog):
         if seed:
             self.profile = QWebEngineProfile("wsdock-login", self)
             self.profile.setPersistentStoragePath(str(paths.web_profile_dir()))
-            self.profile.setCachePath(str(paths.web_cache_dir()))
+            # 页面缓存只放内存：磁盘上不留 Canvas / AMS 的页面内容
+            self.profile.setHttpCacheType(QWebEngineProfile.HttpCacheType.MemoryHttpCache)
             # 只放内存：Chromium 的 cookie 库是明文的，落盘等于把账号钥匙摊在磁盘上。
             # 登录时我们用 cookieAdded 实时抓下来，再经 DPAPI 存进 canvas/ams_session.bin。
             self.profile.setPersistentCookiesPolicy(

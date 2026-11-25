@@ -184,6 +184,42 @@ def bundle_dir() -> Path:
             return cand
     return Path(meipass) if meipass else Path(__file__).resolve().parent.parent
 
+def purge_web_dirs() -> list[Path]:
+    """登录窗的 Chromium 目录里会留 favicon、页面缓存、GPU 缓存。
+
+    cookie 本来就不落盘（NoPersistentCookies），但这些缓存里可能有页面内容，
+    所以在启动和退出时都整目录删掉，下次用再建。
+    """
+    removed: list[Path] = []
+    for name in ("web-profile", "web-cache"):
+        path = data_dir() / name
+        if not path.is_dir():
+            continue
+        try:
+            shutil.rmtree(path)
+            removed.append(path)
+        except OSError:
+            pass
+    return removed
+
+
+def purge_legacy_dir() -> Path | None:
+    """改名前的数据目录：新目录已经存在时，旧目录里只是第二份凭据与旧日志。
+
+    迁移只在「新目录不存在」时发生；新目录已经在了，旧目录就一定是残留，
+    继续放着等于把 DPAPI 凭据和明文日志多留一份。
+    """
+    root = root_dir()
+    legacy = root.parent / LEGACY_NAME
+    if not (root.is_dir() and legacy.is_dir()):
+        return None
+    try:
+        shutil.rmtree(legacy)
+        return legacy
+    except OSError:
+        return None
+
+
 def purge_plain_cookies() -> list[Path]:
     """旧版本把登录窗的 cookie 明文留在 web-profile 里。
 

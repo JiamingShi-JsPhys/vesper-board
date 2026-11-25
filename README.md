@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-1f6feb">
+  <img alt="Version 1.0.2" src="https://img.shields.io/badge/version-1.0.2-1f6feb">
   <img alt="Windows 10 / 11" src="https://img.shields.io/badge/Windows-10%20%2F%2011-1f6feb">
   <img alt="Linux x64" src="https://img.shields.io/badge/Linux-x64-1f6feb">
   <img alt="macOS (CI)" src="https://img.shields.io/badge/macOS-CI%20build-8b8b8f">
@@ -72,21 +72,21 @@ Vesper Board 是桌面上的一颗悬浮球：点开就是**还没交的 Canvas 
 
 ### Windows
 
-- **安装包**：运行 `VesperBoard-1.0.1-setup.exe`。默认装到 `%LOCALAPPDATA%\Programs\VesperBoard`，不需要管理员权限；会创建桌面与开始菜单快捷方式。
+- **安装包**：运行 `VesperBoard-1.0.2-setup.exe`。默认装到 `%LOCALAPPDATA%\Programs\VesperBoard`，不需要管理员权限；会创建桌面与开始菜单快捷方式。
   安装包没有代码签名，SmartScreen 可能提示「Windows 已保护你的电脑」，点「更多信息」→「仍要运行」。
-- **免安装**：解压 `VesperBoard-1.0.1-win-x64.zip`，运行里面的 `VesperBoard.exe`。
-- **静默安装**：`VesperBoard-1.0.1-setup.exe /S`，默认保留已有数据。
+- **免安装**：解压 `VesperBoard-1.0.2-win-x64.zip`，运行里面的 `VesperBoard.exe`。
+- **静默安装**：`VesperBoard-1.0.2-setup.exe /S`，默认保留已有数据。
 
 ### Linux
 
-- 解压 `VesperBoard-1.0.1-linux-x86_64.zip`，运行 `VesperBoard/VesperBoard`。
+- 解压 `VesperBoard-1.0.2-linux-x86_64.zip`，运行 `VesperBoard/VesperBoard`。
   zip 里保留了符号链接，请用会保留链接的 `unzip`、`bsdtar` 或文件管理器解压；
   用 Python 的 `zipfile` 解压会把链接写成文本文件，程序起不来。
 - 或者安装 `.deb`（由 `packaging/build_deb.sh` 生成）。
 
 ### macOS
 
-从 Release 下载 `VesperBoard-v1.0.1-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
+从 Release 下载 `VesperBoard-v1.0.2-macOS-arm64.zip`（Apple 芯片；由 CI 在 macOS runner 上构建）。
 
 - 这是**未签名、未公证**的 `.app`：解压后首次打开会被 Gatekeeper 拦下，
   右键 →「打开」→「打开」，或执行 `xattr -dr com.apple.quarantine "Vesper Board.app"`。
@@ -130,6 +130,7 @@ python main.py
   上传/下载落到对象存储时改用不带 `Authorization`、不带 cookie 的独立连接；
   Canvas 返回的跨来源回调一律拒绝。
 - 只有你点「提交」并在确认框里确认后，选中的文件才会交给 Canvas；Canvas 可能把文件转存到它自己的对象存储。
+- **本机数据全加密**：设置、归档、提醒和日志都用 **AES-256-GCM** 加密后再写盘，主密钥由 Windows DPAPI（macOS 钥匙串 / Linux secret-tool）封装——把文件拷到别的机器上解不开。日志要看明文，用「设置 → 高级 → 导出诊断日志」。
 - 令牌与会话用 **Windows DPAPI** 加密存本机（`%LOCALAPPDATA%\VesperBoard\*.bin`）；
   macOS 用钥匙串，Linux 用 `secret-tool`，没有 `secret-tool` 时降级为 0600 的 `.plain` 文件。
 - 内嵌浏览器（QtWebEngine）使用内存 cookie，不落盘；启动时会清理旧版本留下的明文 cookie 库。
@@ -148,7 +149,7 @@ python main.py
 
 **AMS 一直失败** —— 先确认浏览器里能打开课表页，再在设置里点「登录」重新走一遍统一身份认证。
 
-**登录页白屏** —— 旧版本残留的会话 cookie 会造成 `canvas ↔ iam` 循环重定向；1.0.1 起主动登录会使用干净的内存会话，仍有问题请提 issue 并附上 `dock.log`。
+**登录页白屏** —— 旧版本残留的会话 cookie 会造成 `canvas ↔ iam` 循环重定向；1.0.2 起主动登录会使用干净的内存会话，仍有问题请提 issue 并附上 `dock.log`。
 
 **卸载删不掉数据** —— 卸载器会先结束正在运行的实例；选择「删除数据」时会同时清理新旧两个数据目录。
 
