@@ -34,3 +34,10 @@ tools/
 
 # 任何日志都不进仓库
 *.log
+
+# 运行时用户数据：设置、DPAPI 加密令牌、内嵌浏览器配置
+# 见 AGENTS.md「用户数据」与 CONTRIBUTING.md，绝不提交、不进安装包
+settings.json
+*.bin
+web-profile/
+web-cache/
